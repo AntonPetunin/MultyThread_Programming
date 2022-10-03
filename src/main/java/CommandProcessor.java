@@ -48,7 +48,7 @@ public class CommandProcessor {
 
 
 
-    private void execOperations(ProcessCmd command, double n) throws InterruptedException {
+    private void execOperations(ProcessCmd command, double n) {
 
         switch (command) {
             case START: {
@@ -57,12 +57,21 @@ public class CommandProcessor {
             }
 
             case STOP: {
-                ThreadProcessor.threadStop(n);
+                try
+                {
+                    ThreadProcessor.threadStop(n);
+                } catch (InterruptedException e) {
+                    System.out.println("Поток был остановлен!");
+                }
                 break;
             }
 
             case AWAIT: {
-                ThreadProcessor.awaitThread(n);
+                try {
+                    ThreadProcessor.awaitThread(n);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 break;
             }
 

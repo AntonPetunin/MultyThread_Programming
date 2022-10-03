@@ -7,14 +7,14 @@ public class ThreadProcessor {
 
     private static List<Thread> threads = new ArrayList<>();
 
-    public static void threadStop(double index) {
+    public static void threadStop(double index) throws InterruptedException {
         long id = Math.round(index);
         Optional<Thread> foundThread = threads.stream().filter(el -> el.getId() == id).findFirst();
 
         if (foundThread.isPresent()) {
             if (!foundThread.get().isInterrupted()){
-                foundThread.get().stop();
-                System.out.println("Был остановлен поток " + foundThread.get().getId() + "!");
+                foundThread.get().interrupt();
+                throw new InterruptedException();
             }
             else {
                 System.out.println("Поток " + foundThread.get().getId() + " уже прерван!");
@@ -48,7 +48,7 @@ public class ThreadProcessor {
     public static void StopAllThreads() {
         for (var thread : threads) {
             if (!thread.isInterrupted()) {
-                thread.stop();
+                thread.interrupt();
             }
         }
     }
