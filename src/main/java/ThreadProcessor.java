@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.*;
 
 public class ThreadProcessor {
 
@@ -56,11 +57,12 @@ public class ThreadProcessor {
     private static void getMathTask(double accuracy) {
         double eps = 1 / accuracy;
         double rowSum = 0;
-        try {
-            rowSum = MathUtilClass.calcSinEndlessRow(eps);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        int maxThreadNum = 10;
+
+        ExecutorService executor = Executors.newFixedThreadPool(maxThreadNum);
+
+        
+
         System.out.println("Сумма ряда равна " + rowSum);
     }
 

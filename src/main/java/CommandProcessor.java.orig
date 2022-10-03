@@ -35,6 +35,46 @@ public class CommandProcessor {
     }
 
 
+<<<<<<< Updated upstream
+
+    private void execOperations(ProcessCmd command, double n) {
+
+        switch (command) {
+            case START: {
+                ThreadProcessor.startNewThread(n);
+                break;
+            }
+
+            case STOP: {
+                try
+                {
+                    ThreadProcessor.threadStop(n);
+                } catch (InterruptedException e) {
+                    System.out.println("Поток был остановлен!");
+                }
+                break;
+            }
+
+            case AWAIT: {
+                try {
+                    ThreadProcessor.awaitThread(n);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+
+            case EXIT: {
+                ThreadProcessor.StopAllThreads();
+                break;
+            }
+
+        }
+    }
+
+
+=======
+>>>>>>> Stashed changes
     private ProcessCmd getTaskType(String view) {
         switch (view) {
             case "start" -> {
