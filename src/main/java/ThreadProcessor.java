@@ -29,7 +29,7 @@ public class ThreadProcessor {
 
             futureList.add(executor.submit(call));
         }
-        executor.shutdownNow();
+        executor.shutdown();
 
         for (var future : futureList){
             rowSum += future.get();
