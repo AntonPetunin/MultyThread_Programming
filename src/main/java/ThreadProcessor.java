@@ -1,8 +1,8 @@
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ThreadProcessor {
 
@@ -10,30 +10,34 @@ public class ThreadProcessor {
         double eps = 1 / accuracy;
         double rowSum = 0;
         int maxThreadNum = 100;
+
+        long oldTime = System.currentTimeMillis();
+
         CountDownLatch latch = new CountDownLatch(maxThreadNum);
-
+        Semaphore semaphore = new Semaphore(5);
         ExecutorService executor = Executors.newFixedThreadPool(maxThreadNum);
-
         List<Future<Double>> futureList = new ArrayList<>();
+        Lock lock = new ReentrantLock();
 
         for (int index = 0; index < maxThreadNum; index++){
-            int finalIndex = index;
+            Callable<Double> call = new MyCallable(eps, maxThreadNum, index, lock, latch, oldTime);
 
-            Callable<Double> call = () -> {
-                var res = MathUtilClass.calcSinEndlessRow(eps, finalIndex, maxThreadNum);
-                latch.countDown();
-                System.out.println("Calculation progress: " + (maxThreadNum - latch.getCount()) + "%");
-
-                return res;
-            };
-
-            futureList.add(executor.submit(call));
+            semaphore.acquire();
+            futureList.add(executor.submit(() -> {
+                try {
+                    return call.call();
+                } finally {
+                    semaphore.release();
+                }
+            }));
         }
-        executor.shutdownNow();
+
+        executor.shutdown();
 
         for (var future : futureList){
             rowSum += future.get();
         }
+        latch.await();
 
         System.out.println("Row sum is " + rowSum);
     }
