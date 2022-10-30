@@ -24,13 +24,15 @@ public class MyCallable implements Callable<Double> {
     public Double call() {
         try {
             lock.lock();
+            if (true) throw new RuntimeException("Зависло");
             var res = MathUtilClass.calcSinEndlessRow(eps, curThreadNum, threadNum);
-            latch.countDown();
             System.out.println("Thread " + (threadNum - latch.getCount())
                     + " was calculated in " + (System.currentTimeMillis() - oldTime) + "ms");
 
             return res;
+
         } finally {
+            latch.countDown();
             lock.unlock();
         }
     }
