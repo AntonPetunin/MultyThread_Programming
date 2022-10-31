@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -13,7 +14,7 @@ public class ThreadProcessor {
 
         long oldTime = System.currentTimeMillis();
 
-        MyLatch latch = new MyLatch(maxThreadNum);
+        MyLatch latch = new MyLatch(new AtomicInteger(maxThreadNum));
         MySemaphore semaphore = new MySemaphore(15);
         ExecutorService executor = Executors.newFixedThreadPool(maxThreadNum);
         List<Future<Double>> futureList = new ArrayList<>();

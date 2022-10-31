@@ -1,22 +1,25 @@
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MyLatch {
-    private int counter;
+    private AtomicInteger counter;
 
-    public MyLatch(int counter) {
+    public MyLatch(AtomicInteger counter) {
         this.counter = counter;
     }
 
     public synchronized void countDown(){
-        counter--;
-        if (counter <= 0)
+        if (counter.get() <= 0) return;
+
+        counter.getAndDecrement();
+        if (counter.get() <= 0)
             notifyAll();
     }
 
     public synchronized void await(){
+        if (counter.get() <= 0) return;
         try {
-            if (counter > 0)
-                wait();
+            wait();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -25,13 +28,13 @@ public class MyLatch {
     public synchronized void await(long timeout){
         try {
             wait(timeout);
-            System.out.println("Latch opened!");
+//            System.out.println("Latch opened!");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     public int getCount(){
-        return counter;
+        return counter.get();
     }
 }

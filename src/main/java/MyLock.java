@@ -1,35 +1,32 @@
-public class MyLock {
-    private static final long defaultTimeout = 30000;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-    private int lockCounter = 0;
-    private long timeout = defaultTimeout;
+public class MyLock {
+
+    private AtomicBoolean locked = new AtomicBoolean();
 
     public MyLock() {
-    }
-
-    public MyLock(long timeout) {
-        this.timeout = timeout;
+        locked.set(false);
     }
 
     public synchronized void lock() {
         try {
             while (isLocked()) {
-                wait(timeout);
+                wait();
             }
 //            System.out.println("Lock: закрыл");
-            lockCounter++;
+            locked.set(true);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     public synchronized void unlock() {
-        lockCounter--;
+        locked.set(false);
         notifyAll();
 //        System.out.println("Lock: открыл");
     }
 
     private boolean isLocked(){
-        return lockCounter > 0;
+        return locked.get();
     }
 }
