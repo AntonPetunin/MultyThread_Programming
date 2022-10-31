@@ -9,10 +9,10 @@ public class MathUtilClass {
     public static double calcSinEndlessRow(double eps, int threadNum, int genNum) {
         double sum = 0.0;
         double term = 10E+7;
-        long minIterNumber = threadNum == 0 ? 1 : (long)(0.1 / eps) / genNum * threadNum;
+        long minIterNumber = threadNum == 0 ? 1 : (long)(1 / eps) / genNum * threadNum;
 
         if (threadNum + 1 < genNum){
-            long maxIterNumber = (long)(0.1 / eps) / genNum * (threadNum + 1);
+            long maxIterNumber = minIterNumber + (long)(1 / eps / genNum);
             for (long x = minIterNumber; x < maxIterNumber; x++)
                 sum += 1 / (x * sin(x));
         }
