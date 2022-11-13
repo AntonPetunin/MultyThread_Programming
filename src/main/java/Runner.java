@@ -5,7 +5,7 @@ public class Runner {
     public static void main(String[] args) {
 
         try {
-            ThreadProcessor.executeMathOperation(10E+7);
+            ThreadProcessor.executeOperation();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
